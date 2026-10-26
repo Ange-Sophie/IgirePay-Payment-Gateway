@@ -1,47 +1,45 @@
 
 package com.igirepay;
 
-import com.igirepay.model.Transaction;
-import com.igirepay.service.TransactionManager;
+import com.igirepay.dao.CustomerDAO;
+import com.igirepay.model.Customer;
+import com.igirepay.util.DBConnection;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        TransactionManager manager = new TransactionManager();
+        try (Connection connection =
+                     DBConnection.getConnection()) {
 
-        Transaction first = new Transaction(
-                1,
-                101,
-                "PAY-001",
-                "DEPOSIT",
-                new BigDecimal("10000"),
-                LocalDateTime.now()
-        );
+            System.out.println("Database connected successfully!");
 
-        Transaction duplicate = new Transaction(
-                2,
-                101,
-                "PAY-001",
-                "DEPOSIT",
-                new BigDecimal("10000"),
-                LocalDateTime.now()
-        );
+            CustomerDAO customerDAO = new CustomerDAO();
 
-        System.out.println(
-                "First request: " + manager.recordTransaction(first)
-        );
+            Customer customer = new Customer(
+                    0,
+                    "Sonia Habonimana",
+                    "sonia.test@example.com",
+                    "0780000000"
+            );
 
-        System.out.println(
-                "Duplicate request: " + manager.recordTransaction(duplicate)
-        );
+            int id = customerDAO.addCustomer(customer);
 
-        System.out.println(
-                "Transactions saved: " +
-                        manager.getTransactions().size()
-        );
+            System.out.println("Customer registered with ID: " + id);
+
+            System.out.println("Registered customers:");
+
+            for (Customer c : customerDAO.getAllCustomers()) {
+                System.out.println(c);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(
+                    "Database operation failed: " + e.getMessage()
+            );
+        }
     }
 }
