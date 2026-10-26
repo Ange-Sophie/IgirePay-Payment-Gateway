@@ -1,34 +1,47 @@
 
 package com.igirepay;
 
-import com.igirepay.model.Account;
-import com.igirepay.model.WalletAccount;
-import com.igirepay.model.SavingsAccount;
+import com.igirepay.model.Transaction;
+import com.igirepay.service.TransactionManager;
+
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Account wallet = new WalletAccount(
-                1, 101, new BigDecimal("50000"), "test-hash"
+        TransactionManager manager = new TransactionManager();
+
+        Transaction first = new Transaction(
+                1,
+                101,
+                "PAY-001",
+                "DEPOSIT",
+                new BigDecimal("10000"),
+                LocalDateTime.now()
         );
 
-        Account savings = new SavingsAccount(
-                2, 101, new BigDecimal("20000"), "test-hash"
+        Transaction duplicate = new Transaction(
+                2,
+                101,
+                "PAY-001",
+                "DEPOSIT",
+                new BigDecimal("10000"),
+                LocalDateTime.now()
         );
 
-        wallet.deposit(new BigDecimal("10000"));
-        savings.deposit(new BigDecimal("5000"));
+        System.out.println(
+                "First request: " + manager.recordTransaction(first)
+        );
 
-        System.out.println("Wallet: " + wallet.getBalance());
-        System.out.println("Savings: " + savings.getBalance());
+        System.out.println(
+                "Duplicate request: " + manager.recordTransaction(duplicate)
+        );
 
-        wallet.withdraw(new BigDecimal("15000"));
-        savings.withdraw(new BigDecimal("5000"));
-
-        System.out.println("After withdrawal:");
-        System.out.println("Wallet: " + wallet.getBalance());
-        System.out.println("Savings: " + savings.getBalance());
+        System.out.println(
+                "Transactions saved: " +
+                        manager.getTransactions().size()
+        );
     }
 }
