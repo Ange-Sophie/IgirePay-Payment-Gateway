@@ -2,41 +2,43 @@
 package com.igirepay;
 
 import com.igirepay.dao.AccountDAO;
-import com.igirepay.dao.CustomerDAO;
 import com.igirepay.model.Account;
-import com.igirepay.model.Customer;
-import com.igirepay.model.WalletAccount;
+import com.igirepay.service.PaymentService;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
 public class Main {
+
     public static void main(String[] args) {
-        try {
-            CustomerDAO customerDAO = new CustomerDAO();
-            AccountDAO accountDAO = new AccountDAO();
 
-            Customer customer = customerDAO.getAllCustomers().get(0);
+        PaymentService paymentService = new PaymentService();
+        AccountDAO accountDAO = new AccountDAO();
 
-            Account wallet = new WalletAccount(
-                    0,
-                    customer.getId(),
-                    new BigDecimal("10000"),
-                    "test-hash"
-            );
+        String reference = "SONIA-DUPLICATE-TEST-001";
 
-            int accountId = accountDAO.addAccount(wallet, "WALLET");
-            System.out.println("Account created with ID: " + accountId);
+        for (int i = 1; i <= 2; i++) {
+            try {
+                paymentService.processTransaction(
+                        1,
+                        reference,
+                        "DEPOSIT",
+                        new BigDecimal("100")
+                );
 
-            Account savedAccount = accountDAO.getAccountById(accountId);
-            System.out.println("Saved account: " + savedAccount);
+                System.out.println("Attempt " + i + ": Payment successful.");
 
-            System.out.println("Customer accounts:");
-            for (Account account :
-                    accountDAO.getAccountsByCustomerId(customer.getId())) {
-                System.out.println(account);
+            } catch (SQLException | RuntimeException e) {
+                System.out.println(
+                        "Attempt " + i + ": Payment rejected - "
+                                + e.getMessage()
+                );
             }
+        }
 
+        try {
+            Account account = accountDAO.getAccountById(1);
+            System.out.println("Final account: " + account);
         } catch (SQLException e) {
             System.out.println("Database error: " + e.getMessage());
         }
