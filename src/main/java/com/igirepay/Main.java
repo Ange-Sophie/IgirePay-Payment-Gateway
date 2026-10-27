@@ -1,45 +1,44 @@
 
 package com.igirepay;
 
+import com.igirepay.dao.AccountDAO;
 import com.igirepay.dao.CustomerDAO;
+import com.igirepay.model.Account;
 import com.igirepay.model.Customer;
-import com.igirepay.util.DBConnection;
+import com.igirepay.model.WalletAccount;
 
-import java.sql.Connection;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 
 public class Main {
-
     public static void main(String[] args) {
-
-        try (Connection connection =
-                     DBConnection.getConnection()) {
-
-            System.out.println("Database connected successfully!");
-
+        try {
             CustomerDAO customerDAO = new CustomerDAO();
+            AccountDAO accountDAO = new AccountDAO();
 
-            Customer customer = new Customer(
+            Customer customer = customerDAO.getAllCustomers().get(0);
+
+            Account wallet = new WalletAccount(
                     0,
-                    "Sonia Habonimana",
-                    "sonia.test@example.com",
-                    "0780000000"
+                    customer.getId(),
+                    new BigDecimal("10000"),
+                    "test-hash"
             );
 
-            int id = customerDAO.addCustomer(customer);
+            int accountId = accountDAO.addAccount(wallet, "WALLET");
+            System.out.println("Account created with ID: " + accountId);
 
-            System.out.println("Customer registered with ID: " + id);
+            Account savedAccount = accountDAO.getAccountById(accountId);
+            System.out.println("Saved account: " + savedAccount);
 
-            System.out.println("Registered customers:");
-
-            for (Customer c : customerDAO.getAllCustomers()) {
-                System.out.println(c);
+            System.out.println("Customer accounts:");
+            for (Account account :
+                    accountDAO.getAccountsByCustomerId(customer.getId())) {
+                System.out.println(account);
             }
 
         } catch (SQLException e) {
-            System.err.println(
-                    "Database operation failed: " + e.getMessage()
-            );
+            System.out.println("Database error: " + e.getMessage());
         }
     }
 }

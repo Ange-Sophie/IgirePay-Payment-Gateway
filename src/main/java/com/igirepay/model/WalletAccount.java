@@ -1,4 +1,3 @@
-
 package com.igirepay.model;
 
 import java.math.BigDecimal;
