@@ -1,0 +1,8 @@
+Customer ID,Customer Name,Transaction ID,Account ID,Reference,Type,Amount,Date
+1,"Sonia Habonimana",1,1,"SONIA-TEST-DEPOSIT-001","DEPOSIT",500.00,"2026-10-27 11:17:18"
+1,"Sonia Habonimana",2,1,"SONIA-TEST-WITHDRAW-001","WITHDRAW",1000.00,"2026-10-27 11:25:27"
+1,"Sonia Habonimana",3,1,"SONIA-DUPLICATE-TEST-001","DEPOSIT",100.00,"2026-10-27 11:31:39"
+1,"Sonia Habonimana",4,1,"001","DEPOSIT",200.00,"2026-10-27 15:19:44"
+1,"Sonia Habonimana",5,1,"002","WITHDRAW",100.00,"2026-10-27 15:20:44"
+1,"Sonia Habonimana",6,1,"TRANSFER-001","TRANSFER_OUT",500.00,"2026-10-27 15:47:29"
+1,"Sonia Habonimana",7,4,"TRANSFER-001","TRANSFER_IN",500.00,"2026-10-27 15:47:29"
